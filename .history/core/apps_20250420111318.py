@@ -1,0 +1,9 @@
+from django.apps import AppConfig
+
+class CoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'core'
+
+    def ready(self):
+        # import core.signals # Import signals if you add any later
+        pass # Add pass if the method becomes empty

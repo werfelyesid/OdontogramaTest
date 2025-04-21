@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard - Dr. {{ doctor_name }}</h2>
+
+<a href="{% url 'register_patient' %}" class="btn btn-secondary">Nuevo Paciente</a>
+
+<hr>
+
+<h3>Odontograma (schemaSVG)</h3>
+<div id="odontogram-container">
+    {% include "core/_odontogram.html" %}
+</div>
+
+<!-- Add patient list or other dashboard elements here -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Basic example: Add click listeners to tooth surfaces
+    document.querySelectorAll('.tooth-surface').forEach(surface => {
+        surface.addEventListener('click', function() {
+            const toothId = this.closest('.tooth').getAttribute('data-tooth-id');
+            const surfaceType = this.getAttribute('data-surface-type');
+            console.log(`Clicked surface ${surfaceType} on tooth ${toothId}`);
+            // Add logic here: e.g., change color, open modal, save state via AJAX
+            // Example: Toggle a 'selected' class
+            this.classList.toggle('selected');
+        });
+    });
+</script>
+<style>
+    /* Basic styling for SVG elements */
+    .tooth { cursor: pointer; }
+    .tooth-surface { fill: #ccc; stroke: #333; stroke-width: 0.5; }
+    .tooth-surface:hover { fill: #aaa; }
+    .tooth-surface.selected { fill: #ffcc00; } /* Example selected style */
+    .tooth text { font-size: 5px; text-anchor: middle; dominant-baseline: middle; fill: #000; pointer-events: none; }
+
+    /* Example positioning - adjust as needed */
+    #permanent-denture { transform: translateY(20px); }
+    #deciduous-denture { transform: translateY(150px); }
+</style>
+{% endblock %}
+

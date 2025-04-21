@@ -1,0 +1,91 @@
+<svg id="schemaSVG" width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Odontograma FDI</title>
+    <style>
+        /* Basic styling for SVG elements - can be moved to main CSS */
+        .tooth { cursor: pointer; }
+        .tooth-surface { fill: #e0e0e0; stroke: #666; stroke-width: 0.5; }
+        .tooth-surface:hover { fill: #c0c0c0; }
+        .tooth-surface.selected { fill: #ffeb3b; } /* Example selected style */
+        .tooth text { font-size: 10px; font-family: sans-serif; text-anchor: middle; dominant-baseline: central; fill: #333; pointer-events: none; }
+        .quadrant-label { font-size: 14px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
+        .denture-label { font-size: 16px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
+    </style>
+
+    <!-- Define a reusable tooth structure (simplified box with 5 surfaces) -->
+    <defs>
+        <g id="tooth-shape">
+            <!-- Occlusal/Incisal surface (center) -->
+            <rect class="tooth-surface" data-surface-type="occlusal" x="5" y="5" width="10" height="10" />
+            <!-- Vestibular surface (top) -->
+            <rect class="tooth-surface" data-surface-type="vestibular" x="5" y="0" width="10" height="5" />
+            <!-- Lingual/Palatal surface (bottom) -->
+            <rect class="tooth-surface" data-surface-type="lingual" x="5" y="15" width="10" height="5" />
+            <!-- Mesial surface (left for Q1/Q4, right for Q2/Q3) -->
+            <rect class="tooth-surface" data-surface-type="mesial" x="0" y="5" width="5" height="10" />
+            <!-- Distal surface (right for Q1/Q4, left for Q2/Q3) -->
+            <rect class="tooth-surface" data-surface-type="distal" x="15" y="5" width="5" height="10" />
+            <!-- Tooth number text placeholder -->
+            <text x="10" y="10">N</text>
+        </g>
+         <g id="deciduous-tooth-shape"> <!-- Slightly smaller -->
+            <rect class="tooth-surface" data-surface-type="occlusal" x="4" y="4" width="8" height="8" />
+            <rect class="tooth-surface" data-surface-type="vestibular" x="4" y="0" width="8" height="4" />
+            <rect class="tooth-surface" data-surface-type="lingual" x="4" y="12" width="8" height="4" />
+            <rect class="tooth-surface" data-surface-type="mesial" x="0" y="4" width="4" height="8" />
+            <rect class="tooth-surface" data-surface-type="distal" x="12" y="4" width="4" height="8" />
+            <text x="8" y="8">N</text>
+        </g>
+    </defs>
+
+    <!-- Permanent Denture -->
+    <text x="400" y="20" class="denture-label">Dientes Permanentes</text>
+    <g id="permanent-denture" transform="translate(50, 40)">
+
+        <!-- Quadrant 1 (Upper Right: 18-11) -->
+        <g id="quadrant-1" transform="translate(0, 0)">
+            <text x="160" y="-10" class="quadrant-label">Q1 (Sup. Der.)</text>
+        </g>
+
+        <!-- Quadrant 2 (Upper Left: 21-28) -->
+        <g id="quadrant-2" transform="translate(400, 0)">
+             <text x="160" y="-10" class="quadrant-label">Q2 (Sup. Izq.)</text>
+        </g>
+
+        <!-- Quadrant 3 (Lower Left: 31-38) -->
+         <g id="quadrant-3" transform="translate(400, 50)">
+             <text x="160" y="35" class="quadrant-label">Q3 (Inf. Izq.)</text>
+        </g>
+
+        <!-- Quadrant 4 (Lower Right: 48-41) -->
+        <g id="quadrant-4" transform="translate(0, 50)">
+            <text x="160" y="35" class="quadrant-label">Q4 (Inf. Der.)</text>
+        </g>
+    </g> <!-- End Permanent Denture -->
+
+    <!-- Deciduous Denture -->
+    <text x="400" y="220" class="denture-label">Dientes Temporales (Deciduos)</text>
+    <g id="deciduous-denture" transform="translate(150, 240)"> <!-- Positioned below permanent -->
+
+        <!-- Quadrant 5 (Upper Right: 55-51) -->
+        <g id="quadrant-5" transform="translate(0, 0)">
+             <text x="100" y="-10" class="quadrant-label">Q5 (Sup. Der.)</text>
+        </g>
+
+        <!-- Quadrant 6 (Upper Left: 61-65) -->
+        <g id="quadrant-6" transform="translate(250, 0)">
+             <text x="100" y="-10" class="quadrant-label">Q6 (Sup. Izq.)</text>
+        </g>
+
+        <!-- Quadrant 7 (Lower Left: 71-75) -->
+        <g id="quadrant-7" transform="translate(250, 50)">
+             <text x="100" y="35" class="quadrant-label">Q7 (Inf. Izq.)</text>
+        </g>
+
+        <!-- Quadrant 8 (Lower Right: 85-81) -->
+        <g id="quadrant-8" transform="translate(0, 50)">
+             <text x="100" y="35" class="quadrant-label">Q8 (Inf. Der.)</text>
+        </g>
+
+    </g> <!-- End Deciduous Denture -->
+
+</svg>

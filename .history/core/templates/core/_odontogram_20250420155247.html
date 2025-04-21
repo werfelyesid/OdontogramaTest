@@ -1,0 +1,93 @@
+<svg id="schemaSVG" width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Odontograma FDI</title>
+    <style>
+        /* Basic styling for SVG elements - can be moved to main CSS */
+        .tooth { cursor: pointer; }
+        .tooth-surface { fill: #e0e0e0; stroke: #666; stroke-width: 0.5; }
+        .tooth-surface:hover { fill: #c0c0c0; }
+        .tooth-surface.selected { fill: #ffeb3b; } /* Example selected style */
+        .tooth text { font-size: 10px; font-family: sans-serif; text-anchor: middle; dominant-baseline: central; fill: #333; pointer-events: none; }
+        .quadrant-label { font-size: 14px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
+        .denture-label { font-size: 16px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
+    </style>
+
+    <!-- Define a reusable tooth structure (simplified box with 5 surfaces) -->
+    <defs>
+        <g id="tooth-shape"> <!-- Size increased ~30% -->
+            <!-- Occlusal/Incisal surface (center) -->
+            <rect class="tooth-surface surface-O" data-surface-type="O" x="6.5" y="6.5" width="13" height="13" />
+            <!-- Vestibular surface (top) -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="0" width="13" height="6.5" />
+            <!-- Lingual/Palatal surface (bottom) -->
+            <rect class="tooth-surface surface-L" data-surface-type="L" x="6.5" y="19.5" width="13" height="6.5" />
+            <!-- Mesial surface (left for Q1/Q4, right for Q2/Q3 - adjusted in JS) -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="6.5" width="6.5" height="13" />
+            <!-- Distal surface (right for Q1/Q4, left for Q2/Q3 - adjusted in JS) -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="19.5" y="6.5" width="6.5" height="13" />
+            <!-- Cervico-Vestibular (above V) -->
+            <rect class="tooth-surface surface-CV" data-surface-type="CV" x="6.5" y="-3" width="13" height="3" />
+            <!-- Cervico-Palatal/Lingual (below L) -->
+            <rect class="tooth-surface surface-CP" data-surface-type="CP" x="6.5" y="26" width="13" height="3" />
+            <!-- Tooth number text placeholder REMOVED -->
+            <!-- <text x="13" y="13"></text> -->
+        </g>
+         <g id="deciduous-tooth-shape"> <!-- Slightly smaller, increased ~30% -->
+            <rect class="tooth-surface surface-O" data-surface-type="O" x="5" y="5" width="11" height="11" />
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="5" y="0" width="11" height="5" />
+            <rect class="tooth-surface surface-L" data-surface-type="L" x="5" y="16" width="11" height="5" />
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="5" width="5" height="11" />
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="16" y="5" width="5" height="11" />
+             <!-- Cervico-Vestibular (above V) -->
+            <rect class="tooth-surface surface-CV" data-surface-type="CV" x="5" y="-2.5" width="11" height="2.5" />
+            <!-- Cervico-Palatal/Lingual (below L) -->
+            <rect class="tooth-surface surface-CP" data-surface-type="CP" x="5" y="21" width="11" height="2.5" />
+             <!-- Tooth number text placeholder REMOVED -->
+            <!-- <text x="10.5" y="10.5"></text> -->
+        </g>
+    </defs>
+
+    <!-- Permanent Denture - Row 1 & 4 -->
+    <g id="permanent-denture">
+        <text x="400" y="15" class="denture-label"></text>
+        <!-- Quadrant 1 (Upper Right: 18-11) -->
+        <g id="quadrant-1">
+            <!-- Quadrant Label Text REMOVED -->
+        </g>
+        <!-- Quadrant 2 (Upper Left: 21-28) -->
+        <g id="quadrant-2">
+             <!-- Quadrant Label Text REMOVED -->
+        </g>
+        <!-- Quadrant 4 (Lower Right: 48-41) -->
+        <g id="quadrant-4">
+             <!-- Quadrant Label Text REMOVED -->
+        </g>
+        <!-- Quadrant 3 (Lower Left: 31-38) -->
+         <g id="quadrant-3">
+              <!-- Quadrant Label Text REMOVED -->
+        </g>
+    </g>
+
+    <!-- Deciduous Denture - Row 2 & 3 -->
+    <g id="deciduous-denture">
+        <text x="400" y="115" class="denture-label"></text> <!-- Adjusted Y -->
+        <!-- Quadrant 5 (Upper Right: 55-51) -->
+        <g id="quadrant-5">
+              <!-- Quadrant Label Text REMOVED -->
+        </g>
+        <!-- Quadrant 6 (Upper Left: 61-65) -->
+        <g id="quadrant-6">
+              <!-- Quadrant Label Text REMOVED -->
+        </g>
+         <!-- Quadrant 8 (Lower Right: 85-81) -->
+        <g id="quadrant-8">
+              <!-- Quadrant Label Text REMOVED -->
+        </g>
+        <!-- Quadrant 7 (Lower Left: 71-75) -->
+        <g id="quadrant-7">
+              <!-- Quadrant Label Text REMOVED -->
+        </g>
+    </g>
+
+</svg>
+<!-- Tooltip Element (Initially Hidden) -->
+<div id="odontogram-tooltip" style="position: absolute; display: none; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; pointer-events: none; white-space: nowrap;"></div>

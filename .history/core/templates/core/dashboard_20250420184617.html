@@ -1,0 +1,193 @@
+<!-- filepath: /home/yesid-ramirez/OdontogramaTest/core/templates/core/dashboard.html -->
+{% extends "core/base.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+{% comment %} ...existing content... {% endcomment %}
+<h2>Odontograma (schemaSVG)</h2>
+<div id="odontogram-container" style="position: relative;">
+    {% include "core/_odontogram.html" %}
+</div>
+{% comment %} ...existing content... {% endcomment %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Function to generate the teeth within the SVG structure
+    function generateOdontogram() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const toothWidth = 35; // Width for spacing
+        const permStartX = 50;
+        const permGap = 40;
+        const permQWidth = 8 * toothWidth;
+        const decidStartX = permStartX + (3 * toothWidth); // Adjusted start X
+        const decidGap = 40;
+        const decidQWidth = 5 * toothWidth;
+
+        const numberSpacing = 15; // Space for number + gap
+        const toothHeightPerm = 29; // Approx height of permanent tooth shape
+        const toothHeightDecid = 23.5; // Approx height of deciduous tooth shape
+        const rowGap = 25; // Gap between rows
+
+        const permUpperY = 50 + numberSpacing; // Move down to make space above
+        const decidUpperY = permUpperY + toothHeightPerm + rowGap + numberSpacing;
+        const decidLowerY = decidUpperY + toothHeightDecid + rowGap;
+        const permLowerY = decidLowerY + toothHeightDecid + rowGap;
+
+        // Get tooltip and container elements once
+        const tooltip = document.getElementById('odontogram-tooltip');
+        const container = document.getElementById('odontogram-container');
+
+        if (!tooltip || !container) {
+            console.error("Tooltip or container element not found!");
+            return;
+        }
+
+        // Helper function to create a tooth
+        function createTooth(quadrantElement, toothNum, index, totalInQuadrant, shapeId, xOffset, yOffset, isLeftQuadrant) {
+            if (!quadrantElement) return;
+
+            const toothNode = document.createElementNS(svgNS, "g");
+            toothNode.setAttribute('class', 'tooth');
+            toothNode.setAttribute('id', `tooth-${toothNum}`);
+            toothNode.setAttribute('data-tooth-id', toothNum);
+
+            const positionIndex = index; // Use the loop index directly for positioning
+            const currentX = xOffset + positionIndex * toothWidth;
+            toothNode.setAttribute('transform', `translate(${currentX}, ${yOffset})`);
+
+            const useNode = document.createElementNS(svgNS, "use");
+            useNode.setAttribute("href", shapeId);
+            toothNode.appendChild(useNode);
+
+            // Adjust surface names AND ATTACH LISTENERS
+            const surfaces = toothNode.querySelectorAll('.tooth-surface');
+            surfaces.forEach(surface => {
+                const positionType = surface.getAttribute('data-surface-type'); // O, Top, Bottom, Left, Right, TopCervical, BottomCervical
+                let finalType = positionType; // Default
+
+                const quadrant = Math.floor(toothNum / 10);
+                const toothIndexInArch = parseInt(String(toothNum).slice(-1));
+
+                const isUpper = (quadrant === 1 || quadrant === 2 || quadrant === 5 || quadrant === 6);
+                const isLower = !isUpper;
+                const isRightQuadrant = !isLeftQuadrant; // patient's right (visual left: Q1, 4, 5, 8)
+                const isAnterior = (quadrant <= 4 && toothIndexInArch <= 3) || (quadrant >= 5 && toothIndexInArch <= 3);
+
+                // Apply rules based on positionType (Reverted M/D logic)
+                switch (positionType) {
+                    case 'O':
+                        finalType = isAnterior ? 'I' : 'O';
+                        break;
+                    case 'Top':
+                        finalType = isUpper ? 'V' : 'L';
+                        break;
+                    case 'Bottom':
+                        finalType = isUpper ? 'P' : 'V';
+                        break;
+                    case 'Left': // Visual left rect
+                        finalType = isLeftQuadrant ? 'M' : 'D'; // Standard logic
+                        break;
+                    case 'Right': // Visual right rect
+                        finalType = isLeftQuadrant ? 'D' : 'M'; // Standard logic
+                        break;
+                    case 'TopCervical':
+                        finalType = isUpper ? 'CV' : 'CL';
+                        break;
+                    case 'BottomCervical':
+                        finalType = isUpper ? 'CP' : 'CV';
+                        break;
+                }
+                surface.setAttribute('data-surface-type', finalType);
+
+                // --- Attach Listeners Directly Here ---
+                surface.addEventListener('click', function(event) {
+                    const surfaceType = this.getAttribute('data-surface-type');
+                    console.log(`Clicked surface ${surfaceType} on tooth ${toothNum}`);
+                    console.log("Clicked element:", this);
+                    console.log("Event target:", event.target);
+                    this.classList.toggle('selected');
+                });
+
+                surface.addEventListener('mouseover', function(event) {
+                    const surfaceType = this.getAttribute('data-surface-type');
+                    tooltip.textContent = `Diente ${toothNum} (${surfaceType})`;
+                    tooltip.style.display = 'block';
+                    const containerRect = container.getBoundingClientRect();
+                    tooltip.style.left = `${event.clientX - containerRect.left + 10}px`;
+                    tooltip.style.top = `${event.clientY - containerRect.top + 10}px`;
+                });
+
+                surface.addEventListener('mouseout', function() {
+                    tooltip.style.display = 'none';
+                });
+
+                surface.addEventListener('mousemove', function(event) {
+                    if (tooltip.style.display === 'block') {
+                        const containerRect = container.getBoundingClientRect();
+                        tooltip.style.left = `${event.clientX - containerRect.left + 10}px`;
+                        tooltip.style.top = `${event.clientY - containerRect.top + 10}px`;
+                    }
+                });
+                // --- End Listener Attachment ---
+            });
+
+            quadrantElement.appendChild(toothNode);
+
+            // --- Add Tooth Number Label ---
+            const numberText = document.createElementNS(svgNS, "text");
+            numberText.setAttribute('class', 'tooth-number');
+            numberText.textContent = toothNum;
+
+            const isUpperRow = (yOffset === permUpperY || yOffset === decidUpperY);
+            const currentToothHeight = (shapeId === '#tooth-shape') ? toothHeightPerm : toothHeightDecid;
+            const numberY = isUpperRow ? (yOffset - numberSpacing + 5) : (yOffset + currentToothHeight + numberSpacing - 5);
+
+            let numberXCenterOffset;
+            if (shapeId === '#tooth-shape') {
+                numberXCenterOffset = isLeftQuadrant ? 22.75 : 3.25;
+            } else {
+                numberXCenterOffset = isLeftQuadrant ? 18.5 : 2.5;
+            }
+            const numberX = currentX + numberXCenterOffset;
+
+            numberText.setAttribute('x', numberX);
+            numberText.setAttribute('y', numberY);
+
+            quadrantElement.appendChild(numberText);
+        }
+
+        // --- Generate Permanent Teeth ---
+        const q1 = document.getElementById('quadrant-1');
+        const q2 = document.getElementById('quadrant-2');
+        const q3 = document.getElementById('quadrant-3');
+        const q4 = document.getElementById('quadrant-4');
+        for (let i = 0; i < 8; i++) {
+            createTooth(q1, 18 - i, i, 8, '#tooth-shape', permStartX, permUpperY, false);
+            createTooth(q2, 21 + i, i, 8, '#tooth-shape', permStartX + permQWidth + permGap, permUpperY, true);
+            createTooth(q4, 48 - i, i, 8, '#tooth-shape', permStartX, permLowerY, false);
+            createTooth(q3, 31 + i, i, 8, '#tooth-shape', permStartX + permQWidth + permGap, permLowerY, true);
+        }
+
+        // --- Generate Deciduous Teeth ---
+        const q5 = document.getElementById('quadrant-5');
+        const q6 = document.getElementById('quadrant-6');
+        const q7 = document.getElementById('quadrant-7');
+        const q8 = document.getElementById('quadrant-8');
+        for (let i = 0; i < 5; i++) {
+            createTooth(q5, 55 - i, i, 5, '#deciduous-tooth-shape', decidStartX, decidUpperY, false);
+            createTooth(q6, 61 + i, i, 5, '#deciduous-tooth-shape', decidStartX + decidQWidth + decidGap, decidUpperY, true);
+            createTooth(q8, 85 - i, i, 5, '#deciduous-tooth-shape', decidStartX, decidLowerY, false);
+            createTooth(q7, 71 + i, i, 5, '#deciduous-tooth-shape', decidStartX + decidQWidth + decidGap, decidLowerY, true);
+        }
+    }
+
+    // Wait for the DOM to be fully loaded before generating
+    document.addEventListener('DOMContentLoaded', function() {
+        generateOdontogram(); // Generate teeth and attach listeners inside
+    });
+
+</script>
+{% comment %} Styles moved to _odontogram.html {% endcomment %}
+{% endblock %}

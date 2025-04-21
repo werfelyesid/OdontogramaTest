@@ -1,0 +1,313 @@
+<svg id="schemaSVG" width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+    <title>Odontograma FDI</title>
+    <style>
+        /* Basic styling for SVG elements - can be moved to main CSS */
+        .tooth { cursor: pointer; }
+        .tooth-surface { fill: #e0e0e0; stroke: #666; stroke-width: 0.5; }
+        .tooth-surface:hover { fill: #c0c0c0; }
+        .tooth-surface.selected { fill: #ffeb3b; } /* Example selected style */
+        .tooth text { font-size: 10px; font-family: sans-serif; text-anchor: middle; dominant-baseline: central; fill: #333; pointer-events: none; }
+        .quadrant-label { font-size: 14px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
+        .denture-label { font-size: 16px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
+    </style>
+
+    <!-- Define a reusable tooth structure (simplified box with 5 surfaces) -->
+    <defs>
+        <g id="tooth-shape">
+            <!-- Occlusal/Incisal surface (center) -->
+            <rect class="tooth-surface" data-surface-type="occlusal" x="5" y="5" width="10" height="10" />
+            <!-- Vestibular surface (top) -->
+            <rect class="tooth-surface" data-surface-type="vestibular" x="5" y="0" width="10" height="5" />
+            <!-- Lingual/Palatal surface (bottom) -->
+            <rect class="tooth-surface" data-surface-type="lingual" x="5" y="15" width="10" height="5" />
+            <!-- Mesial surface (left for Q1/Q4, right for Q2/Q3) -->
+            <rect class="tooth-surface" data-surface-type="mesial" x="0" y="5" width="5" height="10" />
+            <!-- Distal surface (right for Q1/Q4, left for Q2/Q3) -->
+            <rect class="tooth-surface" data-surface-type="distal" x="15" y="5" width="5" height="10" />
+            <!-- Tooth number text placeholder -->
+            <text x="10" y="10">N</text>
+        </g>
+         <g id="deciduous-tooth-shape"> <!-- Slightly smaller -->
+            <rect class="tooth-surface" data-surface-type="occlusal" x="4" y="4" width="8" height="8" />
+            <rect class="tooth-surface" data-surface-type="vestibular" x="4" y="0" width="8" height="4" />
+            <rect class="tooth-surface" data-surface-type="lingual" x="4" y="12" width="8" height="4" />
+            <rect class="tooth-surface" data-surface-type="mesial" x="0" y="4" width="4" height="8" />
+            <rect class="tooth-surface" data-surface-type="distal" x="12" y="4" width="4" height="8" />
+            <text x="8" y="8">N</text>
+        </g>
+    </defs>
+
+    <!-- Permanent Denture -->
+    <text x="400" y="20" class="denture-label">Dientes Permanentes</text>
+    <g id="permanent-denture" transform="translate(50, 40)">
+
+        <!-- Quadrant 1 (Upper Right: 18-11) -->
+        <g id="quadrant-1" transform="translate(0, 0)">
+            <text x="160" y="-10" class="quadrant-label">Q1 (Sup. Der.)</text>
+            <script>
+                // Generate teeth 18 to 11
+                const q1 = document.getElementById('quadrant-1');
+                const toothWidth = 25; // Width allocated for each tooth group
+                for (let i = 8; i >= 1; i--) {
+                    const toothNum = 10 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    // Position teeth from left (18) to right (11)
+                    toothNode.setAttribute('transform', `translate(${(8 - i) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    // Adjust Mesial/Distal labels for Q1
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'mesial');
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'distal');
+                    // Adjust Occlusal/Incisal label based on tooth type (simplified)
+                    const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+
+
+                    q1.appendChild(toothNode);
+                }
+            </script>
+        </g>
+
+        <!-- Quadrant 2 (Upper Left: 21-28) -->
+        <g id="quadrant-2" transform="translate(400, 0)">
+             <text x="160" y="-10" class="quadrant-label">Q2 (Sup. Izq.)</text>
+             <script>
+                const q2 = document.getElementById('quadrant-2');
+                const toothWidth = 25;
+                for (let i = 1; i <= 8; i++) {
+                    const toothNum = 20 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    // Position teeth from left (21) to right (28)
+                    toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    // Adjust Mesial/Distal labels for Q2 (swap)
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'distal'); // Right side is Distal
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'mesial'); // Left side is Mesial
+                    // Adjust Occlusal/Incisal label based on tooth type (simplified)
+                     const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+
+                    q2.appendChild(toothNode);
+                }
+            </script>
+        </g>
+
+        <!-- Quadrant 3 (Lower Left: 31-38) -->
+         <g id="quadrant-3" transform="translate(400, 50)">
+             <text x="160" y="35" class="quadrant-label">Q3 (Inf. Izq.)</text>
+             <script>
+                const q3 = document.getElementById('quadrant-3');
+                const toothWidth = 25;
+                for (let i = 1; i <= 8; i++) {
+                    const toothNum = 30 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    // Position teeth from left (31) to right (38)
+                    toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    // Adjust Mesial/Distal labels for Q3 (swap)
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'distal'); // Right side is Distal
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'mesial'); // Left side is Mesial
+                     // Adjust Occlusal/Incisal label based on tooth type (simplified)
+                     const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+
+                    q3.appendChild(toothNode);
+                }
+            </script>
+        </g>
+
+        <!-- Quadrant 4 (Lower Right: 48-41) -->
+        <g id="quadrant-4" transform="translate(0, 50)">
+            <text x="160" y="35" class="quadrant-label">Q4 (Inf. Der.)</text>
+             <script>
+                const q4 = document.getElementById('quadrant-4');
+                const toothWidth = 25;
+                for (let i = 8; i >= 1; i--) {
+                    const toothNum = 40 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    // Position teeth from left (48) to right (41)
+                    toothNode.setAttribute('transform', `translate(${(8 - i) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    // Adjust Mesial/Distal labels for Q4
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'mesial');
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'distal');
+                     // Adjust Occlusal/Incisal label based on tooth type (simplified)
+                     const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+
+                    q4.appendChild(toothNode);
+                }
+            </script>
+        </g>
+    </g> <!-- End Permanent Denture -->
+
+    <!-- Deciduous Denture -->
+    <text x="400" y="220" class="denture-label">Dientes Temporales (Deciduos)</text>
+    <g id="deciduous-denture" transform="translate(150, 240)"> <!-- Positioned below permanent -->
+
+        <!-- Quadrant 5 (Upper Right: 55-51) -->
+        <g id="quadrant-5" transform="translate(0, 0)">
+             <text x="100" y="-10" class="quadrant-label">Q5 (Sup. Der.)</text>
+             <script>
+                const q5 = document.getElementById('quadrant-5');
+                const toothWidth = 25;
+                for (let i = 5; i >= 1; i--) {
+                    const toothNum = 50 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    toothNode.setAttribute('transform', `translate(${(5 - i) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deciduous-tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'mesial');
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'distal');
+                    const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal'); // Central/Lateral Incisor
+
+                    q5.appendChild(toothNode);
+                }
+            </script>
+        </g>
+
+        <!-- Quadrant 6 (Upper Left: 61-65) -->
+        <g id="quadrant-6" transform="translate(250, 0)">
+             <text x="100" y="-10" class="quadrant-label">Q6 (Sup. Izq.)</text>
+             <script>
+                const q6 = document.getElementById('quadrant-6');
+                const toothWidth = 25;
+                for (let i = 1; i <= 5; i++) {
+                    const toothNum = 60 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deciduous-tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'distal');
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'mesial');
+                    const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal');
+
+                    q6.appendChild(toothNode);
+                }
+            </script>
+        </g>
+
+        <!-- Quadrant 7 (Lower Left: 71-75) -->
+        <g id="quadrant-7" transform="translate(250, 50)">
+             <text x="100" y="35" class="quadrant-label">Q7 (Inf. Izq.)</text>
+             <script>
+                const q7 = document.getElementById('quadrant-7');
+                const toothWidth = 25;
+                for (let i = 1; i <= 5; i++) {
+                    const toothNum = 70 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deciduous-tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'distal');
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'mesial');
+                    const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal');
+
+                    q7.appendChild(toothNode);
+                }
+            </script>
+        </g>
+
+        <!-- Quadrant 8 (Lower Right: 85-81) -->
+        <g id="quadrant-8" transform="translate(0, 50)">
+             <text x="100" y="35" class="quadrant-label">Q8 (Inf. Der.)</text>
+             <script>
+                const q8 = document.getElementById('quadrant-8');
+                const toothWidth = 25;
+                for (let i = 5; i >= 1; i--) {
+                    const toothNum = 80 + i;
+                    const toothNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    toothNode.setAttribute('class', 'tooth');
+                    toothNode.setAttribute('id', `tooth-${toothNum}`);
+                    toothNode.setAttribute('data-tooth-id', toothNum);
+                    toothNode.setAttribute('transform', `translate(${(5 - i) * toothWidth}, 0)`);
+
+                    const useNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                    useNode.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deciduous-tooth-shape");
+                    toothNode.appendChild(useNode);
+
+                    const textNode = toothNode.querySelector('text');
+                    textNode.textContent = toothNum;
+
+                    toothNode.querySelector('[data-surface-type="mesial"]').setAttribute('data-surface-type', 'mesial');
+                    toothNode.querySelector('[data-surface-type="distal"]').setAttribute('data-surface-type', 'distal');
+                    const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                    occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal');
+
+                    q8.appendChild(toothNode);
+                }
+            </script>
+        </g>
+
+    </g> <!-- End Deciduous Denture -->
+
+</svg>

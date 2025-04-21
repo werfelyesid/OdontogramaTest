@@ -1,0 +1,266 @@
+<!-- filepath: /home/yesid-ramirez/OdontogramaTest/core/templates/core/dashboard.html -->
+{% extends "core/base.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<!-- ... existing content ... -->
+<h2>Odontograma (schemaSVG)</h2>
+<div id="odontogram-container">
+    {% include "core/_odontogram.html" %}
+</div>
+<!-- ... existing content ... -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Function to generate the teeth within the SVG structure
+    function generateOdontogram() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const toothWidth = 25;
+
+        // --- Quadrant 1 ---
+        const q1 = document.getElementById('quadrant-1');
+        if (q1) { // Check if element exists
+            for (let i = 8; i >= 1; i--) {
+                const toothNum = 10 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(8 - i) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                if(textNode) textNode.textContent = toothNum; // Check if textNode exists
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'mesial');
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'distal');
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+                q1.appendChild(toothNode);
+            }
+        } else {
+            console.error("Element with ID 'quadrant-1' not found.");
+        }
+
+        // --- Quadrant 2 ---
+        const q2 = document.getElementById('quadrant-2');
+        if (q2) {
+            for (let i = 1; i <= 8; i++) {
+                const toothNum = 20 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                 if(textNode) textNode.textContent = toothNum;
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'distal'); // Q2 swap
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'mesial'); // Q2 swap
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+                q2.appendChild(toothNode);
+            }
+        } else {
+             console.error("Element with ID 'quadrant-2' not found.");
+        }
+
+        // --- Quadrant 3 ---
+        const q3 = document.getElementById('quadrant-3');
+         if (q3) {
+            for (let i = 1; i <= 8; i++) {
+                const toothNum = 30 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                 if(textNode) textNode.textContent = toothNum;
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'distal'); // Q3 swap
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'mesial'); // Q3 swap
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+                q3.appendChild(toothNode);
+            }
+        } else {
+             console.error("Element with ID 'quadrant-3' not found.");
+        }
+
+        // --- Quadrant 4 ---
+        const q4 = document.getElementById('quadrant-4');
+        if (q4) {
+            for (let i = 8; i >= 1; i--) {
+                const toothNum = 40 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(8 - i) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                 if(textNode) textNode.textContent = toothNum;
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'mesial');
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'distal');
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 3) ? 'incisal' : 'occlusal');
+                q4.appendChild(toothNode);
+            }
+        } else {
+             console.error("Element with ID 'quadrant-4' not found.");
+        }
+
+        // --- Quadrant 5 ---
+        const q5 = document.getElementById('quadrant-5');
+        if (q5) {
+            for (let i = 5; i >= 1; i--) {
+                const toothNum = 50 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(5 - i) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#deciduous-tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                 if(textNode) textNode.textContent = toothNum;
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'mesial');
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'distal');
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal');
+                q5.appendChild(toothNode);
+            }
+        } else {
+             console.error("Element with ID 'quadrant-5' not found.");
+        }
+
+        // --- Quadrant 6 ---
+        const q6 = document.getElementById('quadrant-6');
+        if (q6) {
+            for (let i = 1; i <= 5; i++) {
+                const toothNum = 60 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#deciduous-tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                 if(textNode) textNode.textContent = toothNum;
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'distal'); // Q6 swap
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'mesial'); // Q6 swap
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal');
+                q6.appendChild(toothNode);
+            }
+        } else {
+             console.error("Element with ID 'quadrant-6' not found.");
+        }
+
+        // --- Quadrant 7 ---
+        const q7 = document.getElementById('quadrant-7');
+        if (q7) {
+            for (let i = 1; i <= 5; i++) {
+                const toothNum = 70 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(i - 1) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#deciduous-tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                 if(textNode) textNode.textContent = toothNum;
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'distal'); // Q7 swap
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'mesial'); // Q7 swap
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal');
+                q7.appendChild(toothNode);
+            }
+        } else {
+             console.error("Element with ID 'quadrant-7' not found.");
+        }
+
+        // --- Quadrant 8 ---
+        const q8 = document.getElementById('quadrant-8');
+        if (q8) {
+            for (let i = 5; i >= 1; i--) {
+                const toothNum = 80 + i;
+                const toothNode = document.createElementNS(svgNS, "g");
+                toothNode.setAttribute('class', 'tooth');
+                toothNode.setAttribute('id', `tooth-${toothNum}`);
+                toothNode.setAttribute('data-tooth-id', toothNum);
+                toothNode.setAttribute('transform', `translate(${(5 - i) * toothWidth}, 0)`);
+                const useNode = document.createElementNS(svgNS, "use");
+                useNode.setAttribute("href", "#deciduous-tooth-shape");
+                toothNode.appendChild(useNode);
+                const textNode = toothNode.querySelector('text');
+                 if(textNode) textNode.textContent = toothNum;
+                const mesialSurface = toothNode.querySelector('[data-surface-type="mesial"]');
+                if(mesialSurface) mesialSurface.setAttribute('data-surface-type', 'mesial');
+                const distalSurface = toothNode.querySelector('[data-surface-type="distal"]');
+                if(distalSurface) distalSurface.setAttribute('data-surface-type', 'distal');
+                const occlusalSurface = toothNode.querySelector('[data-surface-type="occlusal"]');
+                 if(occlusalSurface) occlusalSurface.setAttribute('data-surface-type', (i <= 2) ? 'incisal' : 'occlusal');
+                q8.appendChild(toothNode);
+            }
+        } else {
+             console.error("Element with ID 'quadrant-8' not found.");
+        }
+    }
+
+    // Wait for the DOM to be fully loaded before generating and adding listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Generate the SVG teeth
+        generateOdontogram();
+
+        // Add click listeners to tooth surfaces (now that they exist)
+        document.querySelectorAll('.tooth-surface').forEach(surface => {
+            surface.addEventListener('click', function() {
+                const toothGroup = this.closest('.tooth'); // Find the parent tooth group
+                if (toothGroup) {
+                    const toothId = toothGroup.getAttribute('data-tooth-id');
+                    const surfaceType = this.getAttribute('data-surface-type');
+                    console.log(`Clicked surface ${surfaceType} on tooth ${toothId}`);
+                    // Add logic here: e.g., change color, open modal, save state via AJAX
+                    // Example: Toggle a 'selected' class
+                    this.classList.toggle('selected');
+                } else {
+                    console.error("Could not find parent '.tooth' group for clicked surface.");
+                }
+            });
+        });
+    });
+
+</script>
+<style>
+    /* ...existing styles... */
+</style>
+{% endblock %}

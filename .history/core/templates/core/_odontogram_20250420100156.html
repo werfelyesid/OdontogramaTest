@@ -1,0 +1,69 @@
+<svg id="schemaSVG" width="600" height="300" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+    <title>Odontograma</title>
+
+    <!-- Permanent Denture (Example: Upper Right Quadrant - Teeth 11-18) -->
+    <g id="permanent-denture">
+        <text x="300" y="10" text-anchor="middle" font-size="10">Permanent Denture</text>
+
+        <!-- Example Tooth 11 (Central Incisor) -->
+        <g class="tooth" id="tooth-11" data-tooth-id="11" transform="translate(280, 30)">
+             <title>Tooth 11</title>
+             <!-- Surfaces (Simplified representation - adjust shapes/positions) -->
+             <rect class="tooth-surface" data-surface-type="vestibular" x="0" y="0" width="10" height="15" />
+             <rect class="tooth-surface" data-surface-type="mesial" x="-5" y="2.5" width="5" height="10" />
+             <rect class="tooth-surface" data-surface-type="distal" x="10" y="2.5" width="5" height="10" />
+             <rect class="tooth-surface" data-surface-type="lingual" x="0" y="15" width="10" height="5" /> <!-- Incisal edge often shown differently -->
+             <rect class="tooth-surface" data-surface-type="incisal" x="0" y="-5" width="10" height="5" />
+             <circle class="tooth-surface" data-surface-type="cervical" cx="5" cy="7.5" r="2" fill="#eee"/> <!-- Cervical often implied or shown differently -->
+             <text x="5" y="7.5">11</text>
+        </g>
+         <!-- Example Tooth 16 (First Molar) -->
+        <g class="tooth" id="tooth-16" data-tooth-id="16" transform="translate(180, 30)">
+             <title>Tooth 16</title>
+             <!-- Surfaces (Simplified representation) -->
+             <rect class="tooth-surface" data-surface-type="vestibular" x="0" y="0" width="15" height="15" />
+             <rect class="tooth-surface" data-surface-type="mesial" x="-5" y="2.5" width="5" height="10" />
+             <rect class="tooth-surface" data-surface-type="distal" x="15" y="2.5" width="5" height="10" />
+             <rect class="tooth-surface" data-surface-type="lingual" x="0" y="15" width="15" height="5" />
+             <rect class="tooth-surface" data-surface-type="occlusal" x="0" y="-5" width="15" height="5" />
+             <circle class="tooth-surface" data-surface-type="cervical" cx="7.5" cy="7.5" r="2" fill="#eee"/>
+             <text x="7.5" y="7.5">16</text>
+        </g>
+
+        <!-- Add other permanent teeth (12-15, 17, 18, 21-28, 31-38, 41-48) similarly -->
+        <!-- Position them correctly in quadrants -->
+
+    </g>
+
+    <!-- Deciduous Denture (Example: Upper Right Quadrant - Teeth 51-55) -->
+    <g id="deciduous-denture">
+         <text x="300" y="130" text-anchor="middle" font-size="10">Deciduous Denture</text>
+         <!-- Example Tooth 51 (Central Incisor) -->
+         <g class="tooth" id="tooth-51" data-tooth-id="51" transform="translate(280, 150)">
+             <title>Tooth 51</title>
+             <!-- Surfaces (Simplified) -->
+             <rect class="tooth-surface" data-surface-type="vestibular" x="0" y="0" width="8" height="12" />
+             <rect class="tooth-surface" data-surface-type="mesial" x="-4" y="2" width="4" height="8" />
+             <rect class="tooth-surface" data-surface-type="distal" x="8" y="2" width="4" height="8" />
+             <rect class="tooth-surface" data-surface-type="lingual" x="0" y="12" width="8" height="4" />
+             <rect class="tooth-surface" data-surface-type="incisal" x="0" y="-4" width="8" height="4" />
+             <circle class="tooth-surface" data-surface-type="cervical" cx="4" cy="6" r="1.5" fill="#eee"/>
+             <text x="4" y="6">51</text>
+         </g>
+         <!-- Example Tooth 55 (Second Molar) -->
+         <g class="tooth" id="tooth-55" data-tooth-id="55" transform="translate(220, 150)">
+             <title>Tooth 55</title>
+             <!-- Surfaces (Simplified) -->
+             <rect class="tooth-surface" data-surface-type="vestibular" x="0" y="0" width="12" height="12" />
+             <rect class="tooth-surface" data-surface-type="mesial" x="-4" y="2" width="4" height="8" />
+             <rect class="tooth-surface" data-surface-type="distal" x="12" y="2" width="4" height="8" />
+             <rect class="tooth-surface" data-surface-type="lingual" x="0" y="12" width="12" height="4" />
+             <rect class="tooth-surface" data-surface-type="occlusal" x="0" y="-4" width="12" height="4" />
+             <circle class="tooth-surface" data-surface-type="cervical" cx="6" cy="6" r="1.5" fill="#eee"/>
+             <text x="6" y="6">55</text>
+         </g>
+        <!-- Add other deciduous teeth (52-54, 61-65, 71-75, 81-85) similarly -->
+        <!-- Position them correctly -->
+    </g>
+
+</svg>
