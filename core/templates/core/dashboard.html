@@ -27,13 +27,13 @@
 
         const numberSpacing = 15; // Space for number + gap
         const toothHeightPerm = 29; // Approx height of permanent tooth shape
-        const toothHeightDecid = 23.5; // Approx height of deciduous tooth shape
+        const toothHeightDecid = toothHeightPerm; // Make deciduous height equal to permanent
         const rowGap = 25; // Gap between rows
 
         const permUpperY = 50 + numberSpacing; // Move down to make space above
         const decidUpperY = permUpperY + toothHeightPerm + rowGap + numberSpacing;
-        const decidLowerY = decidUpperY + toothHeightDecid + rowGap;
-        const permLowerY = decidLowerY + toothHeightDecid + rowGap;
+        const decidLowerY = decidUpperY + toothHeightDecid + rowGap; // Use toothHeightDecid (now same as Perm)
+        const permLowerY = decidLowerY + toothHeightDecid + rowGap + numberSpacing; // Adjusted for equal gap spacing
 
         console.log("generateOdontogram function called."); // Log function start
 
@@ -62,15 +62,13 @@
             numberText.textContent = toothNum;
 
             const isUpperRow = (yOffset === permUpperY || yOffset === decidUpperY);
-            const currentToothHeight = (shapeId === '#tooth-shape') ? toothHeightPerm : toothHeightDecid;
-            const numberY = isUpperRow ? (yOffset - numberSpacing + 5) : (yOffset + currentToothHeight + numberSpacing - 5);
+            const currentToothHeight = toothHeightPerm; // Use toothHeightPerm for both since they are now equal
+            // Adjust the vertical offset for lower rows to move the number further down
+            const numberY = isUpperRow ? (yOffset - numberSpacing + 5) : (yOffset + currentToothHeight + numberSpacing + 1); // Changed -3 to +1 for lower rows
 
             let numberXCenterOffset;
-            if (shapeId === '#tooth-shape') {
-                numberXCenterOffset = isLeftQuadrant ? 22.75 : 3.25;
-            } else {
-                numberXCenterOffset = isLeftQuadrant ? 18.5 : 2.5;
-            }
+            // Adjust the offset for left quadrants (Q2, Q3, Q6, Q7) to move the number slightly more left
+            numberXCenterOffset = isLeftQuadrant ? 5.8 : 3.25;
             const numberX = currentX + numberXCenterOffset;
 
             numberText.setAttribute('x', numberX);
@@ -113,111 +111,135 @@
             generateOdontogram();
             console.log("Odontogram generated. Scheduling listener attachment...");
 
-            // Use requestAnimationFrame to ensure generation/paint cycle is complete
             requestAnimationFrame(() => {
-                console.log("requestAnimationFrame callback: Attaching listeners directly...");
+                console.log("requestAnimationFrame callback: Attaching listeners via delegation...");
 
                 const tooltip = document.getElementById('odontogram-tooltip');
                 const container = document.getElementById('odontogram-container');
                 const svgElement = document.getElementById('schemaSVG');
 
                 if (!svgElement) {
-                    console.error("SVG element #schemaSVG not found! Cannot attach listeners.");
+                    console.error("SVG element #schemaSVG not found!");
                     return;
                 }
-                if (!tooltip || !container) {
-                    console.error("Tooltip or container element not found!");
+                if (!tooltip) {
+                    console.error("Tooltip element #odontogram-tooltip not found!");
                 } else {
-                    console.log("Found tooltip and container elements.");
+                    console.log("Tooltip element found:", tooltip);
+                }
+                if (!container) {
+                    console.error("Container element #odontogram-container not found!");
+                } else {
+                    console.log("Container element found:", container);
                 }
 
-                // Query all '.tooth' groups first
-                const allToothGroups = svgElement.querySelectorAll('.tooth');
-                console.log(`Found ${allToothGroups.length} '.tooth' groups.`);
+                // --- Attach Listeners via Event Delegation ---
 
-                allToothGroups.forEach(toothGroup => {
-                    // Query surfaces *within* this specific tooth group
-                    const surfacesInTooth = toothGroup.querySelectorAll('.tooth-surface');
+                svgElement.addEventListener('mouseover', function(event) {
+                    const surface = event.target;
+                    // Check if the target is a tooth surface and not inside defs
+                    if (surface && surface.classList.contains('tooth-surface') && !surface.closest('defs')) {
+                        const toothGroup = surface.closest('.tooth'); // Find the parent tooth group
+                        if (!toothGroup) {
+                            console.warn("Could not find parent '.tooth' group for surface:", surface);
+                            return;
+                        }
+                        if (!tooltip) {
+                            console.error("Tooltip element missing in delegated mouseover handler!");
+                            return;
+                        }
 
-                    surfacesInTooth.forEach(surface => {
-                        // Double check it's not in defs (shouldn't happen with this query structure, but safe)
-                        if (surface.closest('defs')) return;
+                        const toothId = toothGroup.getAttribute('data-tooth-id');
+                        let surfaceType = surface.getAttribute('data-surface-type');
 
-                        // --- Attach Listeners Directly to each surface ---
-                        surface.addEventListener('click', function(event) {
-                            // 'this' is the clicked surface
-                            console.log("Direct click listener fired. Target:", this);
-                            const toothId = toothGroup.getAttribute('data-tooth-id');
-                            let surfaceType = this.getAttribute('data-surface-type'); // Get type from SVG def (M, D, V, P, O, CV, CP)
+                        // Adjust P->L, CP->CL, O->I
+                        const toothIdNum = parseInt(toothId, 10);
+                        const quadrant = Math.floor(toothIdNum / 10);
+                        const toothIndexInArch = parseInt(String(toothIdNum).slice(-1));
+                        const isLower = !(quadrant === 1 || quadrant === 2 || quadrant === 5 || quadrant === 6);
+                        const isAnterior = (quadrant <= 4 && toothIndexInArch <= 3) || (quadrant >= 5 && toothIndexInArch <= 3);
 
-                            // Adjust P->L, CP->CL, O->I
-                            const toothIdNum = parseInt(toothId, 10);
-                            const quadrant = Math.floor(toothIdNum / 10);
-                            const toothIndexInArch = parseInt(String(toothIdNum).slice(-1));
-                            const isLower = !(quadrant === 1 || quadrant === 2 || quadrant === 5 || quadrant === 6);
-                            const isAnterior = (quadrant <= 4 && toothIndexInArch <= 3) || (quadrant >= 5 && toothIndexInArch <= 3);
+                        if (isLower) {
+                            if (surfaceType === 'P') surfaceType = 'L';
+                            if (surfaceType === 'CP') surfaceType = 'CL';
+                        }
+                        if (isAnterior && surfaceType === 'O') {
+                            surfaceType = 'I';
+                        }
 
-                            if (isLower) {
-                                if (surfaceType === 'P') surfaceType = 'L';
-                                if (surfaceType === 'CP') surfaceType = 'CL';
-                            }
-                            if (isAnterior && surfaceType === 'O') {
-                                surfaceType = 'I';
-                            }
+                        tooltip.textContent = `Diente: ${toothId}(${surfaceType})`;
+                        tooltip.style.display = 'block';
+                        console.log("Tooltip display set to 'block'. Content:", tooltip.textContent);
 
-                            console.log(`Processing click: Surface ${surfaceType} on tooth ${toothId}`);
-                            this.classList.toggle('selected');
-                        });
-
-                        surface.addEventListener('mouseover', function(event) {
-                            // 'this' is the hovered surface
-                            if (!tooltip) return;
-                            const toothId = toothGroup.getAttribute('data-tooth-id');
-                            let surfaceType = this.getAttribute('data-surface-type'); // Get type from SVG def
-
-                            // Adjust P->L, CP->CL, O->I
-                            const toothIdNum = parseInt(toothId, 10);
-                            const quadrant = Math.floor(toothIdNum / 10);
-                            const toothIndexInArch = parseInt(String(toothIdNum).slice(-1));
-                            const isLower = !(quadrant === 1 || quadrant === 2 || quadrant === 5 || quadrant === 6);
-                            const isAnterior = (quadrant <= 4 && toothIndexInArch <= 3) || (quadrant >= 5 && toothIndexInArch <= 3);
-
-                            if (isLower) {
-                                if (surfaceType === 'P') surfaceType = 'L';
-                                if (surfaceType === 'CP') surfaceType = 'CL';
-                            }
-                            if (isAnterior && surfaceType === 'O') {
-                                surfaceType = 'I';
-                            }
-
-                            tooltip.textContent = `Diente ${toothId} (${surfaceType})`;
-                            tooltip.style.display = 'block';
-                            if (container) {
-                                const containerRect = container.getBoundingClientRect();
-                                tooltip.style.left = `${event.clientX - containerRect.left + 10}px`;
-                                tooltip.style.top = `${event.clientY - containerRect.top + 10}px`;
-                            }
-                        });
-
-                        surface.addEventListener('mouseout', function(event) {
-                            if (!tooltip) return;
-                            const relatedTarget = event.relatedTarget;
-                            if (!relatedTarget || !relatedTarget.closest || !relatedTarget.closest('.tooth-surface')) {
-                                tooltip.style.display = 'none';
-                            }
-                        });
-
-                        surface.addEventListener('mousemove', function(event) {
-                            if (tooltip && tooltip.style.display === 'block' && container) {
-                                const containerRect = container.getBoundingClientRect();
-                                tooltip.style.left = `${event.clientX - containerRect.left + 10}px`;
-                                tooltip.style.top = `${event.clientY - containerRect.top + 10}px`;
-                            }
-                        });
-                        // --- End Listener Attachment ---
-                    });
+                        // Update position immediately
+                        if (container) {
+                            const containerRect = container.getBoundingClientRect();
+                            tooltip.style.left = `${event.clientX - containerRect.left + 10}px`;
+                            tooltip.style.top = `${event.clientY - containerRect.top + 10}px`;
+                            console.log(`Tooltip position set: left=${tooltip.style.left}, top=${tooltip.style.top}`);
+                        }
+                    }
                 });
-                console.log("Direct listeners attached to surfaces.");
+
+                svgElement.addEventListener('mouseout', function(event) {
+                    const surface = event.target;
+                    const relatedTarget = event.relatedTarget;
+
+                    // Check if the mouse is leaving a tooth surface
+                    if (surface && surface.classList.contains('tooth-surface') && !surface.closest('defs')) {
+                        if (!tooltip) return;
+                        // Hide tooltip if the related target is not another surface (or null/outside SVG)
+                        if (!relatedTarget || !relatedTarget.closest || !relatedTarget.closest('.tooth-surface')) {
+                            tooltip.style.display = 'none';
+                            console.log("Tooltip display set to 'none'. Related target:", relatedTarget);
+                        } else {
+                            console.log("Mouse moved to another surface, tooltip remains visible.");
+                        }
+                    }
+                });
+
+                svgElement.addEventListener('mousemove', function(event) {
+                    // Only update position if tooltip is visible and target is a surface
+                    const surface = event.target;
+                    if (tooltip && tooltip.style.display === 'block' && container && surface && surface.classList.contains('tooth-surface') && !surface.closest('defs')) {
+                        const containerRect = container.getBoundingClientRect();
+                        tooltip.style.left = `${event.clientX - containerRect.left + 10}px`;
+                        tooltip.style.top = `${event.clientY - containerRect.top + 10}px`;
+                    }
+                });
+
+                svgElement.addEventListener('click', function(event) {
+                    const surface = event.target;
+                    // Check if the target is a tooth surface and not inside defs
+                    if (surface && surface.classList.contains('tooth-surface') && !surface.closest('defs')) {
+                        const toothGroup = surface.closest('.tooth');
+                        if (!toothGroup) return;
+
+                        console.log("Delegated click listener fired. Target:", surface);
+                        const toothId = toothGroup.getAttribute('data-tooth-id');
+                        let surfaceType = surface.getAttribute('data-surface-type');
+
+                        // Adjust P->L, CP->CL, O->I
+                        const toothIdNum = parseInt(toothId, 10);
+                        const quadrant = Math.floor(toothIdNum / 10);
+                        const toothIndexInArch = parseInt(String(toothIdNum).slice(-1));
+                        const isLower = !(quadrant === 1 || quadrant === 2 || quadrant === 5 || quadrant === 6);
+                        const isAnterior = (quadrant <= 4 && toothIndexInArch <= 3) || (quadrant >= 5 && toothIndexInArch <= 3);
+
+                        if (isLower) {
+                            if (surfaceType === 'P') surfaceType = 'L';
+                            if (surfaceType === 'CP') surfaceType = 'CL';
+                        }
+                        if (isAnterior && surfaceType === 'O') {
+                            surfaceType = 'I';
+                        }
+
+                        console.log(`Processing click: Surface ${surfaceType} on tooth ${toothId}`);
+                        surface.classList.toggle('selected'); // Toggle on the actual surface clicked
+                    }
+                });
+
+                console.log("Finished attaching delegated listeners to SVG.");
 
             }); // End of requestAnimationFrame
 
