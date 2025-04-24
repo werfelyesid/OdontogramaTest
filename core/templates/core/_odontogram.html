@@ -5,48 +5,154 @@
         .tooth-surface { fill: #e0e0e0; stroke: #666; stroke-width: 0.5; }
         .tooth-surface:hover { fill: #c0c0c0; }
         .tooth-surface.selected { fill: #ffeb3b; } /* Example selected style */
-        .tooth text { font-size: 9.5px; font-family: sans-serif; text-anchor: middle; dominant-baseline: central; fill: #333; pointer-events: none; } /* Adjusted font size */
+        .tooth text { font-size: 7.6px; font-family: sans-serif; text-anchor: middle; dominant-baseline: central; fill: #333; pointer-events: none; } /* Decreased font size again */
         .quadrant-label { font-size: 14px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
         .denture-label { font-size: 16px; font-family: sans-serif; font-weight: bold; text-anchor: middle; }
     </style>
 
-    <!-- Define a reusable tooth structure (simplified box with 5 surfaces) -->
+    <!-- Define reusable tooth structures -->
     <defs>
-        <g id="tooth-shape"> <!-- Size increased ~30% -->
+        <!-- Shape for Right Quadrants (Q1, Q4, Q5, Q8) -->
+        <g id="tooth-shape">
             <!-- Occlusal/Incisal surface (center) -->
-            <rect class="tooth-surface surface-O" data-surface-type="O" x="6.5" y="6.5" width="13" height="13" />
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
             <!-- Vestibular surface (top) -->
-            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="0" width="13" height="6.5" />
-            <!-- Lingual/Palatal surface (bottom) -->
-            <rect class="tooth-surface surface-L" data-surface-type="L" x="6.5" y="19.5" width="13" height="6.5" />
-            <!-- Mesial surface (left for Q1/Q4, right for Q2/Q3 - adjusted in JS) -->
-            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="6.5" width="6.5" height="13" />
-            <!-- Distal surface (right for Q1/Q4, left for Q2/Q3 - adjusted in JS) -->
-            <rect class="tooth-surface surface-D" data-surface-type="D" x="19.5" y="6.5" width="6.5" height="13" />
-            <!-- Cervico-Vestibular (above V) -->
-            <rect class="tooth-surface surface-CV" data-surface-type="CV" x="6.5" y="-3" width="13" height="3" />
-            <!-- Cervico-Palatal/Lingual (below L) -->
-            <rect class="tooth-surface surface-CP" data-surface-type="CP" x="6.5" y="26" width="13" height="3" />
-            <!-- Tooth number text placeholder REMOVED -->
-            <!-- <text x="13" y="13"></text> -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="0" width="13" height="6.5"></rect>
+            <!-- Palatal/Lingual surface (bottom) -->
+            <rect class="tooth-surface surface-P" data-surface-type="P" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Distal surface (anatomically) -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Mesial surface (anatomically) -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Vestibular -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Palatal/Lingual -->
+            <rect class="tooth-surface surface-CP" data-surface-type="PC" x="6.5" y="26" width="13" height="6.5"></rect>
         </g>
-         <g id="deciduous-tooth-shape"> <!-- Made equal size to permanent -->
+
+        <!-- Shape for Left Quadrants (Q2, Q3, Q6, Q7) - M/D Swapped -->
+        <g id="tooth-shape-left">
             <!-- Occlusal/Incisal surface (center) -->
-            <rect class="tooth-surface surface-O" data-surface-type="O" x="6.5" y="6.5" width="13" height="13" />
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
             <!-- Vestibular surface (top) -->
-            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="0" width="13" height="6.5" />
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="0" width="13" height="6.5"></rect>
+            <!-- Palatal/Lingual surface (bottom) -->
+            <rect class="tooth-surface surface-P" data-surface-type="P" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Mesial surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Distal surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Vestibular -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Palatal/Lingual -->
+            <rect class="tooth-surface surface-CP" data-surface-type="PC" x="6.5" y="26" width="13" height="6.5"></rect>
+        </g>
+
+        <g id="deciduous-tooth-shape"> <!-- Assuming right-side naming for now -->
+            <!-- Occlusal/Incisal surface (center) -->
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
+            <!-- Vestibular surface (top) -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="0" width="13" height="6.5"></rect>
             <!-- Lingual/Palatal surface (bottom) -->
-            <rect class="tooth-surface surface-L" data-surface-type="L" x="6.5" y="19.5" width="13" height="6.5" />
-            <!-- Mesial surface (left for Q1/Q4, right for Q2/Q3 - adjusted in JS) -->
-            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="6.5" width="6.5" height="13" />
-            <!-- Distal surface (right for Q1/Q4, left for Q2/Q3 - adjusted in JS) -->
-            <rect class="tooth-surface surface-D" data-surface-type="D" x="19.5" y="6.5" width="6.5" height="13" />
-             <!-- Cervico-Vestibular (above V) -->
-            <rect class="tooth-surface surface-CV" data-surface-type="CV" x="6.5" y="-3" width="13" height="3" />
-            <!-- Cervico-Palatal/Lingual (below L) -->
-            <rect class="tooth-surface surface-CP" data-surface-type="CP" x="6.5" y="26" width="13" height="3" />
-             <!-- Tooth number text placeholder REMOVED -->
-            <!-- <text x="10.5" y="10.5"></text> -->
+            <rect class="tooth-surface surface-P" data-surface-type="P" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Distal surface -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Mesial surface -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Vestibular -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Palatal/Lingual -->
+            <rect class="tooth-surface surface-CP" data-surface-type="PC" x="6.5" y="26" width="13" height="6.5"></rect>
+        </g>
+
+        <!-- Shape for Left Deciduous Quadrants (Q6, Q7) - M/D Swapped -->
+        <g id="deciduous-tooth-shape-left">
+            <!-- Occlusal/Incisal surface (center) -->
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
+            <!-- Vestibular surface (top) -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="0" width="13" height="6.5"></rect>
+            <!-- Palatal/Lingual surface (bottom) -->
+            <rect class="tooth-surface surface-P" data-surface-type="P" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Mesial surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Distal surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Vestibular -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Palatal/Lingual -->
+            <rect class="tooth-surface surface-CP" data-surface-type="PC" x="6.5" y="26" width="13" height="6.5"></rect>
+        </g>
+
+        <!-- Shape for Right Lower Deciduous Quadrants (Q8) -->
+        <g id="deciduous-tooth-shape-lower-right">
+            <!-- Occlusal/Incisal surface (center) -->
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
+            <!-- Lingual surface (top position in SVG, anatomically bottom/lingual) -->
+            <rect class="tooth-surface surface-L" data-surface-type="L" x="6.5" y="0" width="13" height="6.5"></rect>
+            <!-- Vestibular surface (bottom position in SVG, anatomically top/vestibular) -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Distal surface -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Mesial surface -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Lingual (above L in SVG) -->
+            <rect class="tooth-surface surface-CL" data-surface-type="LC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Vestibular (below V in SVG) -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="26" width="13" height="6.5"></rect>
+        </g>
+
+        <!-- Shape for Left Lower Deciduous Quadrants (Q7) - M/D Swapped -->
+        <g id="deciduous-tooth-shape-lower-left">
+            <!-- Occlusal/Incisal surface (center) -->
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
+            <!-- Lingual surface (top position in SVG) -->
+            <rect class="tooth-surface surface-L" data-surface-type="L" x="6.5" y="0" width="13" height="6.5"></rect>
+            <!-- Vestibular surface (bottom position in SVG) -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Mesial surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Distal surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Lingual (above L in SVG) -->
+            <rect class="tooth-surface surface-CL" data-surface-type="LC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Vestibular (below V in SVG) -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="26" width="13" height="6.5"></rect>
+        </g>
+
+        <!-- Shape for Right Lower Permanent Quadrants (Q4) -->
+        <g id="tooth-shape-lower-right">
+            <!-- Occlusal/Incisal surface (center) -->
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
+            <!-- Lingual surface (top position in SVG) -->
+            <rect class="tooth-surface surface-L" data-surface-type="L" x="6.5" y="0" width="13" height="6.5"></rect>
+            <!-- Vestibular surface (bottom position in SVG) -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Distal surface -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Mesial surface -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Lingual (above L in SVG) -->
+            <rect class="tooth-surface surface-CL" data-surface-type="LC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Vestibular (below V in SVG) -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="26" width="13" height="6.5"></rect>
+        </g>
+
+        <!-- Shape for Left Lower Permanent Quadrants (Q3) - M/D Swapped -->
+        <g id="tooth-shape-lower-left">
+            <!-- Occlusal/Incisal surface (center) -->
+            <circle class="tooth-surface surface-O" data-surface-type="O" cx="13" cy="13" r="6.5"></circle>
+            <!-- Lingual surface (top position in SVG) -->
+            <rect class="tooth-surface surface-L" data-surface-type="L" x="6.5" y="0" width="13" height="6.5"></rect>
+            <!-- Vestibular surface (bottom position in SVG) -->
+            <rect class="tooth-surface surface-V" data-surface-type="V" x="6.5" y="19.5" width="13" height="6.5"></rect>
+            <!-- Mesial surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-M" data-surface-type="M" x="0" y="6.5" width="6.5" height="13"></rect>
+            <!-- Distal surface (anatomically) - Swapped position/class/data -->
+            <rect class="tooth-surface surface-D" data-surface-type="D" x="19.5" y="6.5" width="6.5" height="13"></rect>
+            <!-- Cervico-Lingual (above L in SVG) -->
+            <rect class="tooth-surface surface-CL" data-surface-type="LC" x="6.5" y="-6.5" width="13" height="6.5"></rect>
+            <!-- Cervico-Vestibular (below V in SVG) -->
+            <rect class="tooth-surface surface-CV" data-surface-type="VC" x="6.5" y="26" width="13" height="6.5"></rect>
         </g>
     </defs>
 
@@ -93,5 +199,3 @@
     </g>
 
 </svg>
-<!-- Tooltip Element (Initially Hidden) -->
-<div id="odontogram-tooltip" style="position: absolute; display: none; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; pointer-events: none; white-space: nowrap; z-index: 10;"></div>
